@@ -381,30 +381,79 @@ export class LobbyComponent implements OnInit, OnDestroy {
     this.sessionId = this.route.snapshot.params['sessionId'];
     this.loadThemes();
     
-    // Check if this is a direct join from QR code
-    this.route.queryParams.subscribe(params => {
-      this.showJoinForm = params['direct'] === 'true';
+    // Check if this is a direct join from QR code or if user already joined from home
+    const directParam = this.route.snapshot.queryParamMap.get('direct');
+    const joinedParam = this.route.snapshot.queryParamMap.get('joined');
+    
+    console.log('Direct parameter:', directParam);
+    console.log('Joined parameter:', joinedParam);
+    
+    // Skip join form if user already joined via home screen
+    if (joinedParam === 'true') {
+      this.showJoinForm = false;
+      this.subscribeToGameUpdates();
+      return;
+    }
+    
+    // Check if the user is already connected to this session
+    this.gameService.getCurrentPlayer().subscribe(player => {
+      const hasActiveSession = !!player;
+      console.log('User has active session:', hasActiveSession);
+      
+      // Show join form if direct=true OR if user doesn't have an active session
+      this.showJoinForm = directParam === 'true' || !hasActiveSession;
+      console.log('showJoinForm set to:', this.showJoinForm);
+      
+      // Subscribe to game updates only if user has an active session
+      if (hasActiveSession) {
+        this.subscribeToGameUpdates();
+      }
     });
     
-    // Only subscribe to game session updates if not showing join form
-    if (!this.showJoinForm) {
-      this.subscribeToGameUpdates();
-    }
+    // Also keep the route parameter subscription for navigation within component
+    this.route.queryParams.subscribe(params => {
+      console.log('Query params updated:', params);
+      if (params['direct'] === 'true') {
+        this.showJoinForm = true;
+        console.log('showJoinForm set to true by query params');
+      } else if (params['joined'] === 'true') {
+        this.showJoinForm = false;
+        console.log('showJoinForm set to false because user already joined');
+      }
+    });
   }
 
   private subscribeToGameUpdates(): void {
     // Subscribe to game session updates
     this.subscriptions.push(
       this.gameService.getCurrentSession().subscribe(session => {
-        if (!session) return;
-        this.players = Object.values(session.players);
+        if (!session) {
+          console.log('Received null session');
+          return;
+        }
+        
+        console.log('Session updated in lobby:', session);
+        console.log('Players in session:', session.players);
+        
+        if (session.players) {
+          this.players = Object.values(session.players);
+          console.log('Players array updated:', this.players);
+        } else {
+          console.log('No players object in session');
+          this.players = [];
+        }
       })
     );
 
     // Subscribe to current player updates
     this.subscriptions.push(
       this.gameService.getCurrentPlayer().subscribe(player => {
-        if (!player) return;
+        if (!player) {
+          console.log('Received null player');
+          return;
+        }
+        
+        console.log('Current player updated:', player);
         this.isHost = player.isHost;
       })
     );

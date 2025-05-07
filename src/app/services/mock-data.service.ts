@@ -118,17 +118,33 @@ export class MockDataService {
   }
 
   // Player Management
-  joinGame(sessionId: string, player: Player): Observable<void> {
-    return of(player).pipe(
+  joinGame(sessionId: string, player: Player): Observable<string> {
+    // Générer un ID utilisateur spécifique pour ce joueur
+    const userId = 'user_' + Math.random().toString(36).substring(2, 9);
+    
+    // Mettre à jour l'ID du joueur avec le nouveau userId
+    const playerWithId = {
+      ...player,
+      id: userId
+    };
+    
+    return of(userId).pipe(
       delay(500), // Simulate network delay
-      map(p => {
+      tap(() => {
         const session = this.sessions.get(sessionId);
         if (session) {
-          session.players[p.id] = p;
-          this.currentSession.next(session);
+          // Ajouter le joueur à la session avec son ID comme clé
+          session.players[userId] = playerWithId;
+          console.log('Mock: Added player to session:', playerWithId);
+          console.log('Mock: Session players now:', session.players);
+          
+          // Notifier les abonnés de la mise à jour
+          this.currentSession.next({...session});
+        } else {
+          console.error('Mock: No session found with ID:', sessionId);
         }
-        return undefined;
-      })
+      }),
+      map(() => userId) // Retourner l'ID pour que le joueur puisse l'utiliser
     );
   }
 

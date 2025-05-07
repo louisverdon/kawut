@@ -42,15 +42,20 @@ export class FirebaseService {
   }
 
   // Player Management
-  joinGame(sessionId: string, player: Player): Observable<void> {
+  joinGame(sessionId: string, player: Player): Observable<string> {
     return from(this.signInAnonymously()).pipe(
       switchMap(uid => {
         const playerRef = this.db.object(`sessions/${sessionId}/players/${uid}`);
-        return from(playerRef.set({
+        const playerWithId = {
           ...player,
           id: uid,
           score: 0
-        }));
+        };
+        
+        return from(playerRef.set(playerWithId)).pipe(
+          // Renvoyer l'UID pour que le service de jeu puisse l'utiliser
+          map(() => uid)
+        );
       })
     );
   }

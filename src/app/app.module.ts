@@ -27,7 +27,7 @@ import { FirebaseService } from './services/firebase.service';
 import { MockDataService } from './services/mock-data.service';
 
 // Flag to use mock data instead of Firebase (for local testing)
-const USE_MOCK_DATA = true;
+const USE_MOCK_DATA = false;
 
 // Create a mock FirebaseService
 class MockFirebaseService {

@@ -1,12 +1,12 @@
 export const environment = {
   production: false,
   firebase: {
-    apiKey: "AIzaSyDummyKeyForLocalTesting123456",
-    authDomain: "kawut-demo.firebaseapp.com",
-    databaseURL: "https://kawut-demo.firebaseio.com",
-    projectId: "kawut-demo",
-    storageBucket: "kawut-demo.appspot.com",
-    messagingSenderId: "123456789012",
-    appId: "1:123456789012:web:abcdef1234567890"
+    apiKey: "AIzaSyCF0olzE6dMTUv4brsWaPkVcNSto287SjA",
+    authDomain: "kawut-2f74b.firebaseapp.com",
+    projectId: "kawut-2f74b",
+    storageBucket: "kawut-2f74b.firebasestorage.app",
+    messagingSenderId: "204405305195",
+    appId: "1:204405305195:web:4bcefd7e71d792b7ece62e",
+    measurementId: "G-R9843P7DG3"
   }
 }; 

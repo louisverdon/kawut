@@ -74,7 +74,10 @@ export class QrCodeComponent implements OnChanges {
   
   private generateQRCode(): void {
     const canvas = this.qrCanvas.nativeElement;
-    const joinUrl = `${window.location.origin}/lobby/${this.sessionId}?direct=true`;
+    // Ensure we encode the URL properly, making sure direct=true is preserved
+    const baseUrl = `${window.location.origin}/lobby/${this.sessionId}`;
+    const joinUrl = `${baseUrl}?direct=true`;
+    console.log('Generated QR code URL:', joinUrl);
     
     QRCode.toCanvas(canvas, joinUrl, {
       width: 200,
@@ -93,7 +96,10 @@ export class QrCodeComponent implements OnChanges {
   private generateDemoQRCode(): void {
     const canvas = this.qrCanvas.nativeElement;
     const demoSessionId = 'DEMO' + Math.random().toString(36).substring(2, 7).toUpperCase();
-    const joinUrl = `${window.location.origin}/lobby/${demoSessionId}?direct=true`;
+    // Ensure we encode the URL properly, making sure direct=true is preserved
+    const baseUrl = `${window.location.origin}/lobby/${demoSessionId}`;
+    const joinUrl = `${baseUrl}?direct=true`;
+    console.log('Generated demo QR code URL:', joinUrl);
     
     QRCode.toCanvas(canvas, joinUrl, {
       width: 200,

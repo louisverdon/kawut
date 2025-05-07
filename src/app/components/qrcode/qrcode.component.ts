@@ -49,7 +49,9 @@ export class QRCodeComponent implements OnInit {
 
   private generateQRCode() {
     const canvas = this.qrCanvas.nativeElement;
-    const url = `${window.location.origin}/lobby/${this.sessionId}`;
+    const baseUrl = `${window.location.origin}/lobby/${this.sessionId}`;
+    const url = `${baseUrl}?direct=true`;
+    console.log('QRCode component - Generated URL:', url);
     
     QRCode.toCanvas(canvas, url, {
       width: 200,

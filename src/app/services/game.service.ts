@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@angular/core';
 import { BehaviorSubject, Observable, timer, of } from 'rxjs';
-import { map, take, switchMap } from 'rxjs/operators';
+import { map, take, switchMap, tap } from 'rxjs/operators';
 import { FirebaseService } from './firebase.service';
 import { GameSession, Player, Question, Team, Vote, GameStatus } from '../models/game.models';
 
@@ -10,17 +10,32 @@ import { GameSession, Player, Question, Team, Vote, GameStatus } from '../models
 export class GameService {
   private currentSession: GameSession | null = null;
   private currentPlayer: Player | null = null;
+  
+  // Create BehaviorSubject observables to emit updates
+  private sessionSubject = new BehaviorSubject<GameSession | null>(null);
+  private playerSubject = new BehaviorSubject<Player | null>(null);
 
   constructor(@Inject('DataService') private dataService: any) {}
 
   // Session Management
   createGame(): Observable<string> {
-    return this.dataService.createGameSession();
+    return this.dataService.createGameSession().pipe(
+      tap(sessionId => {
+        // Mettre en place l'écouteur de session dès la création
+        if (sessionId && typeof sessionId === 'string') {
+          console.log('Game created with ID:', sessionId);
+          this.setupSessionListener(sessionId);
+        }
+      })
+    );
   }
 
   joinSession(sessionId: string, name: string, team: Team, isHost: boolean = false): Observable<void> {
+    console.log('Joining session:', sessionId, 'as', name, 'team:', team, 'isHost:', isHost);
+    
+    // Créer un joueur avec un ID temporaire
     const player: Player = {
-      id: '',
+      id: '', // L'ID sera défini par Firebase
       name,
       team,
       score: 0,
@@ -28,26 +43,65 @@ export class GameService {
     };
 
     return this.dataService.joinGame(sessionId, player).pipe(
-      map(() => {
+      tap(uid => {
+        // Le service retourne maintenant l'UID du joueur
+        if (uid && typeof uid === 'string') {
+          // Mettre à jour l'ID du joueur avec celui de Firebase
+          player.id = uid;
+          console.log('Player ID set to:', uid);
+        } else {
+          console.error('No valid UID returned from joinGame');
+        }
+      }),
+      switchMap(() => {
+        // Mettre en place l'écouteur de session
+        console.log('Setting up session listener for', sessionId);
         this.setupSessionListener(sessionId);
+        
+        // Mettre à jour l'état local
         this.currentPlayer = player;
+        console.log('Current player updated:', this.currentPlayer);
+        this.playerSubject.next(player);
+        
+        // Pas besoin de retourner quelque chose de spécial
+        return of(undefined);
       })
     );
   }
 
   private setupSessionListener(sessionId: string): void {
+    console.log('Starting session listener for session:', sessionId);
     this.dataService.getGameSession(sessionId).subscribe((session: GameSession | null) => {
+      console.log('Session updated in GameService:', session);
+      
+      if (session) {
+        console.log('Players in session:', Object.keys(session.players).length);
+        
+        // Si le joueur courant existe, vérifie s'il est dans la session
+        if (this.currentPlayer) {
+          const playerInSession = session.players[this.currentPlayer.id];
+          console.log('Current player in session:', playerInSession ? 'yes' : 'no');
+          
+          // Si le joueur n'est pas dans la session mais a un ID, l'ajouter manuellement
+          if (!playerInSession && this.currentPlayer.id) {
+            console.log('Adding missing player to session:', this.currentPlayer);
+            session.players[this.currentPlayer.id] = this.currentPlayer;
+          }
+        }
+      }
+      
       this.currentSession = session;
+      this.sessionSubject.next(session); // Emit session update
     });
   }
 
   // Game State
   getCurrentSession(): Observable<GameSession | null> {
-    return of(this.currentSession);
+    return this.sessionSubject.asObservable();
   }
 
   getCurrentPlayer(): Observable<Player | null> {
-    return of(this.currentPlayer);
+    return this.playerSubject.asObservable();
   }
 
   // Game Flow
