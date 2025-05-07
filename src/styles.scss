@@ -1,0 +1,71 @@
+/* You can add global styles to this file, and also import other style files */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background: #1a1a1a;
+  color: white;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &-primary {
+    background: #4CAF50;
+    color: white;
+    
+    &:hover {
+      background: #45a049;
+    }
+  }
+  
+  &-secondary {
+    background: #2196F3;
+    color: white;
+    
+    &:hover {
+      background: #1e88e5;
+    }
+  }
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 24px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.team {
+  &-yellow { color: #FFD700; }
+  &-red { color: #FF4444; }
+  &-blue { color: #2196F3; }
+  &-green { color: #4CAF50; }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.pulse {
+  animation: pulse 1s infinite;
+} 
