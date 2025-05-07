@@ -20,6 +20,7 @@ import * as QRCode from 'qrcode';
       padding: 1rem;
       background-color: white;
       border-radius: 8px;
+      border: 2px solid #333;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       max-width: 220px;
       margin: 0 auto;
@@ -34,6 +35,9 @@ import * as QRCode from 'qrcode';
       margin-top: 0.5rem;
       text-align: center;
       width: 100%;
+      background-color: #f0f0f0;
+      padding: 0.5rem;
+      border-radius: 4px;
     }
     
     .session-info p {

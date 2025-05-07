@@ -129,6 +129,7 @@ import { GameSession, Player, Team, GameStatus } from '../../models/game.models'
       width: 100%;
       max-width: 800px;
       text-align: center;
+      background: rgba(32, 32, 32, 0.8);
     }
 
     h2 {
@@ -282,8 +283,8 @@ import { GameSession, Player, Team, GameStatus } from '../../models/game.models'
       width: 100%;
       padding: 12px;
       font-size: 16px;
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.3);
       border-radius: 8px;
       color: #fff;
     }
@@ -343,6 +344,16 @@ import { GameSession, Player, Team, GameStatus } from '../../models/game.models'
 
     .btn-primary:hover:not(:disabled) {
       background: #3d8c40;
+    }
+
+    /* QR Code Container Styling */
+    app-qr-code {
+      display: block;
+      margin: 20px auto;
+      padding: 10px;
+      background: #333;
+      border-radius: 10px;
+      width: fit-content;
     }
   `]
 })
