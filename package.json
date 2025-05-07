@@ -8,7 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "build:prod": "ng build --configuration production --base-href=/kawut/",
-    "deploy": "npx angular-cli-ghpages --dir=dist/kawut"
+    "deploy": "ng build --configuration production --base-href=/kawut/ && npx gh-pages -d dist/kawut"
   },
   "private": true,
   "dependencies": {
@@ -22,19 +22,19 @@
     "@angular/platform-browser-dynamic": "^16.2.0",
     "@angular/router": "^16.2.0",
     "canvas-confetti": "^1.9.2",
-    "firebase": "^10.8.0",
+    "firebase": "^9.23.0",
     "qrcode": "^1.5.4",
     "rxjs": "~7.8.1",
     "tslib": "^2.6.2",
     "zone.js": "~0.13.0"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^16.2.0",
-    "@angular/cli": "~16.2.0",
+    "@angular-devkit/build-angular": "^16.2.10",
+    "@angular/cli": "~16.2.10",
     "@angular/compiler-cli": "^16.2.0",
     "@types/jasmine": "~4.3.0",
     "@types/qrcode": "^1.5.5",
-    "angular-cli-ghpages": "^2.0.3",
+    "gh-pages": "^5.0.0",
     "jasmine-core": "~4.6.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
